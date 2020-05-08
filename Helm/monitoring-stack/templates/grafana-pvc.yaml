@@ -1,0 +1,27 @@
+{{- if and .Values.grafana.persistence.enabled (not .Values.grafana.persistence.existingClaim) }}
+apiVersion: apps/v1
+
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "monitoring-stack.fullname" . }}-grafana
+  labels:
+    app: {{ template "monitoring-stack.name" . }}-grafana
+    chart: {{ template "monitoring-stack.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  accessModes:
+    - {{ .Values.grafana.persistence.accessModes | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.grafana.persistence.storageSize | quote }}
+{{- if .Values.grafana.persistence.storageClass }}
+{{- if (eq "-" .Values.grafana.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+{{- if (eq "-" .Values.grafana.persistence.storageClass) }}
+  storageClassName: "{{ .Values.grafana.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

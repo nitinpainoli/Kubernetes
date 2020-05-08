@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "monitoring-stack.fullname" . }}-alertmanager
+  labels:
+    app: {{ template "monitoring-stack.name" . }}-alertmanager
+    chart: {{ template "monitoring-stack.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.alertmanager.service.type }}
+  ports:
+    - port: {{ .Values.alertmanager.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "monitoring-stack.name" . }}-alertmanager
+    release: {{ .Release.Name }}

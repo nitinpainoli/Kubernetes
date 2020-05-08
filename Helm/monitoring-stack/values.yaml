@@ -1,0 +1,51 @@
+# Default values for monitoring-stack.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+prometheus:
+  name: monitoring-prometheus
+  replicaCount: 1
+  image:
+    repository: prom/prometheus
+    tag: latest
+    pull_policy: IfNotPresent
+  service:
+    type: NodePort
+    port: 9090
+
+grafana:
+  name: monitoring-grafana
+  replicaCount: 1
+  image:
+    repository: grafana/grafana
+    tag: latest
+    pull_policy: IfNotPresent
+  GfSecurityAdminUser: admin
+  GfSecurityAdminPassword: admin
+  # GrafanaHost:
+  GfAuthAnonymousEnabled: "true"
+  GfAuthAnonymousOrgRole:  Admin
+  service:
+    type: NodePort
+    port: 3000
+  persistence:
+    enabled: false
+    accessMode: ReadWriteOnce
+    storageClass: "-"
+    storageSize: 5Gi
+
+alertmanager:
+  name: monitoring-alertmanager
+  replicaCount: 1
+  image:
+    repository: prom/alertmanager
+    tag: latest
+    pull_policy: IfNotPresent
+  service:
+    type: NodePort
+    port: 9093
+  mailhog:
+    receiver: 'unmatched-default-root-route'
+    receiverEmail: 'test@gmail.com'  #receivers mailid
+    smtp_from: 'alertmanager@example.org'
+    smtp_tls: 'false'
